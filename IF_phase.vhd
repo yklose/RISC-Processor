@@ -45,10 +45,10 @@ architecture BEHAVIOUR of IF_PHASE is
         
         PC: process(CLK, RESET)
         begin
-            if RESET = '1' then
+            if RESET then
                 PC_ACT <= (others => '1') after 5 ns;
-            elsif CLK='0' and CLK'event then
-                if JUMP_TAKEN_EX = '1' then 
+            elsif falling_edge(CLK) then
+                if JUMP_TAKEN_EX then 
                     PC_ACT <= JUMP_DEST_EX after 5 ns;
                 else
                     PC_ACT <= PC_ACT + 1 after 5 ns; 
@@ -58,8 +58,8 @@ architecture BEHAVIOUR of IF_PHASE is
             
         ROM_P: process (CLK)
         begin 
-            if (CLK='1' and CLK'event) then 
-                if EN = '1' then
+            if rising_edge(CLK) then 
+                if EN then
                     I_ID <= INSTR_ROM(conv_integer(PC_ACT)) after 5 ns;
                 end if;
             end if;
@@ -67,9 +67,9 @@ architecture BEHAVIOUR of IF_PHASE is
         
         IF_ID: process(CLK, RESET)
         begin
-            if RESET = '1' then
+            if RESET then
                 PC_ID <= (others => '0') after 5 ns;
-            elsif CLK = '1' and CLK'event then
+            elsif rising_edge(CLK) then
                 PC_ID <= PC_ACT after 5 ns;
             end if;
         end process IF_ID;

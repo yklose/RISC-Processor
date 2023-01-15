@@ -56,9 +56,9 @@ architecture BEHAVE of MEM_PHASE is
         -- Synchronous RAM in "write-first" mode 
         RAM_P: process(CLK)
         begin
-            if CLK = '0' and CLK'event then
-                if EN = '1' then
-                    if WE = '1' then
+            if falling_edge(CLK) then
+                if EN then
+                    if WE then
                         DATA_RAM(conv_integer(OP_RESULT_MEM(7 downto 0))) <= REG_MEM after 5 ns;
                         DOUT <= REG_MEM after 5 ns;
                     else
@@ -71,14 +71,14 @@ architecture BEHAVE of MEM_PHASE is
         -- MEM/WB Pipeline Register includes DATA multiplexer
         MEM_WB_Interface: process(RESET, CLK)
         begin
-            if RESET = '1' then
+            if RESET then
                 DATA_WB <= (others => '0') after 5 ns;
                 DEST_WB <= (others => '0') after 5 ns;
                 DEST_EN_WB <= '0' after 5 ns;
-            elsif CLK = '1' and CLK'event then
-                if (EN_EXT = '1') and (WE_EXT_int = '0') then
+            elsif rising_edge(CLK) then
+                if EN_EXT and not WE_EXT_int then
                     DATA_WB <= IN_EXT after 5 ns;
-                elsif (EN = '1') and (WE = '0') then
+                elsif EN and not WE then
                     DATA_WB <= DOUT after 5 ns;     
                 else
                     DATA_WB <= OP_RESULT_MEM after 5 ns;
@@ -92,10 +92,10 @@ architecture BEHAVE of MEM_PHASE is
         -- Registered Output (16 Bit)
         GPO: process(RESET, CLK)
         begin
-            if RESET = '1' then 
+            if RESET then 
                 OUT_EXT <= (others => '0') after 5 ns;
-            elsif CLK = '1' and CLK'event then
-                if WE_EXT_int = '1' then
+            elsif rising_edge(CLK) then
+                if WE_EXT_int then
                     OUT_EXT <= REG_MEM after 5 ns;
                 end if;             
             end if;

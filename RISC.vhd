@@ -3,6 +3,7 @@ use IEEE.std_logic_1164.ALL;
 use IEEE.std_logic_unsigned.ALL;
 use WORK.RISC_pack.ALL;
 
+
 entity RISC is
     port(   CLK: in bit;
             RESET_A: in bit;
@@ -94,7 +95,7 @@ architecture BEHAVIOUR of RISC is
    
        ASYNC_RESET: process(CLK)
        begin
-           if CLK = '1' and CLK'event then
+           if rising_edge(CLK) then
                TEMP <= RESET_A after 5 ns;
                RESET <= TEMP after 5 ns;
            end if;

@@ -1,5 +1,4 @@
 use WORK.RISC_pack.ALL;
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -13,8 +12,8 @@ end INT_BUSDRV;
 
 architecture BEHAVE of INT_BUSDRV is 
 begin
-    ABUS <= REG_VAL after 10 ns when ASEL = '1' else (others => 'Z') after 10 ns;
-    BBUS <= REG_VAL after 10 ns when BSEL = '1' else (others => 'Z') after 10 ns;
+    ABUS <= REG_VAL after 10 ns when ASEL else (others => 'Z') after 10 ns;
+    BBUS <= REG_VAL after 10 ns when BSEL else (others => 'Z') after 10 ns;
 end BEHAVE;
 
 
@@ -32,11 +31,11 @@ architecture BEHAVE of REG is
 begin 
     P1: process(CLK, RESET)
         begin
-            if RESET = '1' then
+            if RESET then
                 REG_VAL <= (others => '0') after 5 ns; 
-            elsif CLK='0' and CLK'event then 
+            elsif falling_edge(CLK) then 
             -- store at falling clock edge
-                if CSEL = '1' then
+                if CSEL then
                     REG_VAL <= DATA after 5 ns; 
                 end if;
             end if;    
@@ -56,6 +55,7 @@ entity REGFILE is
             DATA: in DATA_TYPE;
             DEST: in REGISTER_ADDRESS_TYPE;
             EN: in bit;
+            
             REG_A, REG_B: out DATA_TYPE);
 end REGFILE;        
         
@@ -81,20 +81,20 @@ architecture BEHAVE of REGFILE is
     begin
         DX_A: process(SRC1)
             begin
-                ASEL <= (others => '0');
+                ASEL <= (others => '0') after 5 ns;
                 ASEL(conv_integer(to_stdlogicvector(SRC1))) <= '1' after 5 ns; 
         end process DX_A;
         
         DX_B: process(SRC2)
             begin
-                BSEL <= (others => '0');
+                BSEL <= (others => '0') after 5 ns;
                 BSEL(conv_integer(to_stdlogicvector(SRC2))) <= '1' after 5 ns; 
         end process DX_B;
         
         DX_DEST: process (DEST, EN)
             begin
-                DEST_SEL <= (others => '0');
-                if EN='1' then
+                DEST_SEL <= (others => '0') after 5 ns;
+                if EN then
                     DEST_SEL(conv_integer(to_stdlogicvector(DEST))) <= '1' after 5 ns; 
                 end if;
         end process DX_DEST;

@@ -35,11 +35,7 @@ package body RISC_pack is
 function To_StdLogic (b: bit) return std_logic is 
     variable result : std_logic;
     begin 
-        if b='0' then 
-            RESULT := '0';
-        else 
-            RESULT := '1';
-        end if;
+        Result := '0' when b else '1';
     return RESULT;
 end To_StdLogic;
 
@@ -49,8 +45,8 @@ function Zero_ext (INP: std_logic_vector; L : natural) return std_logic_vector i
     
     begin 
         result(INP'length-1 downto 0) := INP;
-        for j in L-1 downto INP'length loop
-            result(j) := '0';
+        for J in L-1 downto INP'length loop
+            result(J) := '0';
         end loop;
     return result;
 end Zero_ext;

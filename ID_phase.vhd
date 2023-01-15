@@ -101,7 +101,7 @@ architecture DECODE of ID_PHASE is
                 or ((OPC_ID_int = blto) and (NFLAG = '1'))
                 or ((OPC_ID_int = bgeo) and ((NFLAG = '0' ) or (ZFLAG = '1')))) then 
                 JUMP_TAKEN <= '1' after 5 ns;
-            end if;            
+            end if;               
         end process JUMP_TAKEN_P;
         
         -- Registerfile component instantiation
@@ -110,13 +110,13 @@ architecture DECODE of ID_PHASE is
         -- ID/EX Pipeline Registers
         ID_EX_Interface: process(RESET, CLK)
         begin
-            if RESET = '1' then
+            if RESET then
                 REG_A_EX <= (others => '0') after 5 ns;
                 REG_B_EX <= (others => '0') after 5 ns;
                 IMM_EX <= (others => '0') after 5 ns;
                 DEST_EX <= (others => '0') after 5 ns;
                 OPC_EX <= nopo after 5 ns;
-            elsif CLK = '1' and CLK'event then
+            elsif rising_edge(CLK) then
                 REG_A_EX <= REG_A after 5 ns;
                 REG_B_EX <= REG_B after 5 ns;
                 IMM_EX <= I_ID(7 downto 0) after 5 ns;
